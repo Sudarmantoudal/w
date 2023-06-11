@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<!-- saved from url=(0032)file:///D:/PROJEK/tanpalogo.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"> 
+  <title>Simulasi Kredit Syariah</title> 
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    
+    h2 {
+      text-align: center;
+    }
+
+    h1 {
+      text-align: center;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 5px;
+      border-radius: 3px;
+      border: 1px solid #ccc;
+    }
+    
+    .btn-calculate {
+      width: 100%;
+      padding: 10px;
+      background-color: #3e9eac;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    .result {
+      margin-top: 15px;
+      background-color: #f4f4f4;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .logo img {
+      width: 300px;
+      height: auto;
+    }
+  </style> 
+ </head> 
+ <body> 
+  <div class="container"> 
+   <div class="logo"> 
+   <img alt="BES" class="chakra-image css-16qjkai" src="./BES_files/BES.PNG">
+   </div> 
+   <h1>Simulasi Kredit Syariah</h1>
+   <div class="form-group"> <label for="harga-barang">Harga Barang</label> 
+    <input type="text" id="harga-barang" onkeyup="formatRupiah(this)"> 
+   </div> 
+   <div class="form-group"> <label for="uang-muka">Uang Muka</label> 
+    <input type="text" id="uang-muka" onkeyup="formatRupiah(this)"> 
+   </div> 
+   <div class="form-group"> <label for="tenor">Tenor (bulan)</label> 
+    <input type="number" id="tenor" max="24"> 
+   </div> <button class="btn-calculate" onclick="calculate()">Hitung</button> 
+   <div id="result" class="result">
+        <p>Angsuran Bulanan: Rp&nbsp;466.666,67</p>
+        <p>Jumlah Angsuran: Rp&nbsp;5.600.000,00</p>
+      </div> 
+  </div> 
+  <script>
+    function formatRupiah(input) {
+      var value = input.value;
+      // Menghapus karakter selain angka
+      value = value.replace(/[^\d]/g, '');
+
+      // Menambahkan titik sebagai pemisah ribuan
+      value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+      // Menambahkan "IDR " di depan nilai
+      value = "Rp " + value;
+
+      // Mengupdate nilai pada input
+      input.value = value;
+      }
+
+    function calculate() {
+      var hargaBarang = parseInt(document.getElementById('harga-barang').value.replace(/[^\d]/g, ''));
+      var uangMuka = parseInt(document.getElementById('uang-muka').value.replace(/[^\d]/g, ''));
+      
+      if (isNaN(uangMuka)) {
+        uangMuka = 0;
+        document.getElementById('uang-muka').value = "Rp 0";
+      }
+
+      if (uangMuka > hargaBarang) {
+        document.getElementById('result').innerHTML = "Uang Muka tidak boleh melebihi Harga Barang.";
+        return;
+      }
+      
+      var tenor = parseInt(document.getElementById('tenor').value);
+      
+      if (isNaN(tenor)) {
+        tenor = 0;
+      }
+
+      if (tenor > 24) {
+        document.getElementById('result').innerHTML = "Tenor tidak boleh lebih dari 24 bulan.";
+        return;
+      }
+
+      // Validasi harga barang
+      if (hargaBarang == 0) {
+        alert('Harga barang tidak boleh nol!'); // Menampilkan pesan kesalahan
+        return; // Menghentikan perhitungan
+      }
+      
+      var angsuranPokok = hargaBarang - uangMuka;
+      var pokokBulanan = angsuranPokok / tenor;
+      var margin = 0.8 * angsuranPokok * tenor / 24; // 80% pertahun 2 tahun
+      var marginBulanan = margin / tenor;
+      var angsuranBulanan = pokokBulanan + marginBulanan;
+      var jumlahAngsuran = angsuranPokok + margin;
+
+      document.getElementById('result').innerHTML = `
+        <p>Angsuran Bulanan: ${formatCurrency(angsuranBulanan)}</p>
+        <p>Jumlah Angsuran: ${formatCurrency(jumlahAngsuran)}</p>
+      `;
+    }
+
+    function formatCurrency(value) {
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(value);
+    }
+  </script> 
+ 
+</body></html>
